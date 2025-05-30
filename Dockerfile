@@ -55,12 +55,15 @@ RUN cd nagioscore-nagios-4.5.9 && \
 # Deshabilitar el sitio default de Apache
 RUN a2dissite 000-default.conf
 
+# Asegurar que el site de Nagios quede habilitado
+RUN a2ensite nagios.conf
+
 # Ajustar permisos para Nagios
 RUN chown -R www-data:www-data /usr/local/nagios/share /usr/local/nagios/sbin
 RUN chmod -R 755 /usr/local/nagios/share /usr/local/nagios/sbin
 
-# Ajustar configuración de Apache para permitir acceso
-RUN sed -i 's/Require all denied/Require all granted/g' /etc/apache2/sites-enabled/nagios.conf
+# Ajustar configuración de Apache para permitir acceso con user/pass (sin 403)
+RUN sed -i 's/Require all denied/Require valid-user/g' /etc/apache2/sites-enabled/nagios.conf
 
 # Crear usuario de acceso web (usuario: nagiosadmin / contraseña: nagiosadmin)
 RUN htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin nagiosadmin
@@ -76,3 +79,4 @@ EXPOSE 80
 
 # Comando de inicio
 CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+
