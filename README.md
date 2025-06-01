@@ -43,7 +43,7 @@ Implementación:
 
 Toda la infraestructura se encuentra completamente operativa: la imagen ha sido creada correctamente, subida a ECR, desplegada en ECS con ALB, y el ALB responde correctamente en su URL.
 
-Se tiene acceso a la URL principal de Apache mediante el ALB.
+Se tiene acceso a la URL principal de Apache mediante el ALB, A Nagios da error 403 si se entra mediante el ALB, pero si se despliega el contenedor de manera local funciona el servicio sin problemas.
 
 Para volver a desplegar la imagen en el ECR realice lo siguiente:
 
