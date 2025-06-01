@@ -30,19 +30,19 @@ RUN apt-get update && \
 # Establecer directorio de trabajo
 WORKDIR /tmp
 
-# Descargar el código fuente de Nagios
+# Paso 1: Descargar el código fuente de Nagios
 RUN wget --user-agent="Mozilla/5.0" -O nagioscore-4.5.9.tar.gz "https://github.com/NagiosEnterprises/nagioscore/archive/refs/tags/nagios-4.5.9.tar.gz"
 
-# Verificar que el archivo está descargado
+# Paso 2: Verificar que el archivo está descargado
 RUN ls -lh /tmp
 
-# Descomprimir el código fuente
+# Paso 3: Descomprimir el código fuente
 RUN tar zxvf nagioscore-4.5.9.tar.gz && ls -lh /tmp
 
-# Crear usuario y grupo necesarios para la instalación
+# Paso 4: Crear usuario y grupo necesarios para la instalación
 RUN useradd -m -s /bin/bash nagios
 
-# Compilar e instalar Nagios
+# Paso 5: Compilar e instalar Nagios
 RUN cd nagioscore-nagios-4.5.9 && \
     ./configure --with-httpd-conf=/etc/apache2/sites-enabled && \
     make all && \
@@ -52,31 +52,17 @@ RUN cd nagioscore-nagios-4.5.9 && \
     make install-config && \
     make install-webconf
 
-# Deshabilitar el sitio default de Apache
-RUN a2dissite 000-default.conf
-
-# Asegurar que el site de Nagios quede habilitado
-RUN a2ensite nagios.conf
-
-# Ajustar permisos para Nagios
-RUN chown -R www-data:www-data /usr/local/nagios/share /usr/local/nagios/sbin
-RUN chmod -R 755 /usr/local/nagios/share /usr/local/nagios/sbin
-
-# Ajustar configuración de Apache para permitir acceso con user/pass (sin 403)
-RUN sed -i 's/Require all denied/Require valid-user/g' /etc/apache2/sites-enabled/nagios.conf
-
-# Crear usuario de acceso web (usuario: nagiosadmin / contraseña: nagiosadmin)
+# Paso 6: Crear usuario de acceso web
 RUN htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin nagiosadmin
 
-# Habilitar CGI en Apache
+# Paso 7: Habilitar CGI en Apache
 RUN a2enmod cgi
-
-# Verificar contenido de Nagios
-RUN ls -l /usr/local/nagios/share
 
 # Exponer puerto 80
 EXPOSE 80
 
 # Comando de inicio
 CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+
+
 
