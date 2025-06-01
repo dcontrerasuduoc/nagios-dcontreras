@@ -1,6 +1,9 @@
 Este entorno corresponde a la evaluación 2 de Tecnologias de Virtualización.
+
 Profesor: Rodrigo Horacio Aguilar Gonzalez
+
 Autor: Daniel Contreras Ulloa
+
 Repositorio GitHub: https://github.com/dcontrerasuduoc/nagios-dcontreras
 
 ###############################################################################################################################################################################################
